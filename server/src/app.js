@@ -70,19 +70,23 @@ app.get("/profile", async (req, res) => {
   try {
     let cookie = req.cookies;
 
-  const { token } = cookie;
+    const { token } = cookie;
 
-  const decoded = await jwt.verify(token, process.env.JWT_SECRET);
-  console.log(decoded);
-  const { _id } = decoded;
-  const user = await User.findById({ _id });
-  res.status(200).json({
-    message: "get the profile successfully ",
-    user,
-  });  
-  } catch (error) {
-    
-  }
+    if (!token) {
+      return res.status(400).json({
+        message:"Invalide Token"
+      })
+    }
+
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+    console.log(decoded);
+    const { _id } = decoded;
+    const user = await User.findById({ _id });
+    res.status(200).json({
+      message: "get the profile successfully ",
+      user,
+    });
+  } catch (error) {}
 });
 
 app.get("/user", async (req, res) => {

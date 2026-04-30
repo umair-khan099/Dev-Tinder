@@ -3,17 +3,20 @@ import dotenv from "dotenv";
 import User from "./model/user.model.js";
 import { validateSignUp } from "./utils/validation.js";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import cookieParser from "cookie-parser";
 dotenv.config();
 const app = express();
 
 app.use(express.json());
+app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
   try {
     validateSignUp(req);
     const { password, firstName, email } = req.body;
     const hashPassword = await bcrypt.hash(password, 10);
-    let user = new User({ email, password: hashPassword, firstName });
+    let user = new User({ firstName, email, password: hashPassword });
 
     await user.save();
 
@@ -33,8 +36,8 @@ app.post("/login", async (req, res) => {
 
     if (!email || !password) {
       return res.status(400).json({
-        message:"Invalid Cridatials"
-      })
+        message: "Invalid Cridatials",
+      });
     }
     const user = await User.findOne({ email });
 
@@ -49,6 +52,10 @@ app.post("/login", async (req, res) => {
         message: "Incorrect password try again",
       });
     }
+    const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "7d",
+    });
+    res.cookie("token", token);
     return res.status(200).json({
       message: "User has logged in successfully",
     });
@@ -56,6 +63,25 @@ app.post("/login", async (req, res) => {
     res.status(500).json({
       message: error.message,
     });
+  }
+});
+
+app.get("/profile", async (req, res) => {
+  try {
+    let cookie = req.cookies;
+
+  const { token } = cookie;
+
+  const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+  console.log(decoded);
+  const { _id } = decoded;
+  const user = await User.findById({ _id });
+  res.status(200).json({
+    message: "get the profile successfully ",
+    user,
+  });  
+  } catch (error) {
+    
   }
 });
 
@@ -97,7 +123,7 @@ app.patch("/updateuser/:userId", async (req, res) => {
 
     if (data.skills.length > 10) {
       res.status(400).json({
-        message: "",
+        message: "kuchh jyada hi skill wala bnn ra hai kya +",
       });
     }
     const user = await User.findByIdAndUpdate({ _id: userId }, data, {

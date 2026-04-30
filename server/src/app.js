@@ -5,6 +5,7 @@ import { validateSignUp } from "./utils/validation.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import userAuth from "./middlewares/auth.middleware.js";
 dotenv.config();
 const app = express();
 
@@ -66,24 +67,11 @@ app.post("/login", async (req, res) => {
   }
 });
 
-app.get("/profile", async (req, res) => {
+app.get("/profile", userAuth, async (req, res) => {
   try {
-    let cookie = req.cookies;
-
-    const { token } = cookie;
-
-    if (!token) {
-      return res.status(400).json({
-        message:"Invalide Token"
-      })
-    }
-
-    const decoded = await jwt.verify(token, process.env.JWT_SECRET);
-    console.log(decoded);
-    const { _id } = decoded;
-    const user = await User.findById({ _id });
+    const user = req.user;
     res.status(200).json({
-      message: "get the profile successfully ",
+      message: "Welcome Back",
       user,
     });
   } catch (error) {}

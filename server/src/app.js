@@ -6,11 +6,13 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import userAuth from "./middlewares/auth.middleware.js";
+import morgan from "morgan";
 dotenv.config();
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(morgan("dev"));
 
 app.post("/signup", async (req, res) => {
   try {
@@ -53,9 +55,7 @@ app.post("/login", async (req, res) => {
         message: "Incorrect password try again",
       });
     }
-    const token = await jwt.sign({ _id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "7d",
-    });
+      const token = await user.getJWT()
     res.cookie("token", token);
     return res.status(200).json({
       message: "User has logged in successfully",
@@ -74,7 +74,11 @@ app.get("/profile", userAuth, async (req, res) => {
       message: "Welcome Back",
       user,
     });
-  } catch (error) {}
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 });
 
 app.get("/user", async (req, res) => {
@@ -128,6 +132,14 @@ app.patch("/updateuser/:userId", async (req, res) => {
       error: message,
     });
   }
+});
+
+app.post("/connection", userAuth, async (req, res) => {
+  const user = req.user;
+
+  res.status(200).json({
+    message: `${user.firstName} has send Request`,
+  });
 });
 
 export default app;

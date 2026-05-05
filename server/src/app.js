@@ -49,13 +49,13 @@ app.post("/login", async (req, res) => {
         message: "User not found please register first",
       });
     }
-    const verify = await bcrypt.compare(password, user.password);
+    const verify = await user.validatePassword(password);
     if (!verify) {
       return res.status(400).json({
         message: "Incorrect password try again",
       });
     }
-      const token = await user.getJWT()
+    const token = await user.getJWT();
     res.cookie("token", token);
     return res.status(200).json({
       message: "User has logged in successfully",
@@ -81,7 +81,7 @@ app.get("/profile", userAuth, async (req, res) => {
   }
 });
 
-app.get("/user", async (req, res) => {
+app.get("/users", async (req, res) => {
   try {
     const users = await User.find({});
 

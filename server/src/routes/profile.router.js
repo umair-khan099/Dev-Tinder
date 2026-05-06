@@ -1,5 +1,6 @@
 import { Router } from "express";
 import userAuth from "../middlewares/auth.middleware.js";
+import User from "../model/user.model.js";
 
 const profileRouter = Router();
 
@@ -17,8 +18,8 @@ profileRouter.get("/view", userAuth, async (req, res) => {
   }
 });
 
-profileRouter.patch("/updateuser/:userId", async (req, res) => {
-  const userId = req.params?.userId;
+profileRouter.patch("/edit", userAuth, async (req, res) => {
+  const user = req.user;
   const data = req.body;
 
   try {
@@ -46,14 +47,14 @@ profileRouter.patch("/updateuser/:userId", async (req, res) => {
         message: "kuchh jyada hi skill wala bnn ra hai kya +",
       });
     }
-    const user = await User.findByIdAndUpdate({ _id: userId }, data, {
+    const updatedUser = await User.findByIdAndUpdate(user.id, data, {
       returnDocument: "after",
     });
 
-    res.send("user created succssfully ", { user });
+    res.send("user updated succssfully ", { updatedUser });
   } catch (error) {
     res.status(400).json({
-      error: message,
+      message: error.message,
     });
   }
 });

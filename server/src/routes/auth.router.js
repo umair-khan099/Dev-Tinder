@@ -1,0 +1,62 @@
+import { Router } from "express";
+import { validateSignUp } from "../utils/validation.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import User from "../model/user.model.js";
+
+const authRouter = Router();
+
+authRouter.post("/signup", async (req, res) => {
+  try {
+    validateSignUp(req);
+    const { password, firstName, email } = req.body;
+    const hashPassword = await bcrypt.hash(password, 10);
+    let user = new User({ firstName, email, password: hashPassword });
+
+    await user.save();
+
+    res.send("user added successfully", {
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
+
+authRouter.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        message: "Invalid Cridatials",
+      });
+    }
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({
+        message: "User not found please register first",
+      });
+    }
+    const verify = await user.validatePassword(password);
+    if (!verify) {
+      return res.status(400).json({
+        message: "Incorrect password try again",
+      });
+    }
+    const token = await user.getJWT();
+    res.cookie("token", token);
+    return res.status(200).json({
+      message: "User has logged in successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
+
+export default authRouter;

@@ -6,9 +6,15 @@ const requestRouter = Router();
 
 requestRouter.post("/send/:status/:toUserId", userAuth, async (req, res) => {
   try {
-    const fromUserId = req.user._id
+    const fromUserId = req.user._id;
     const toUserId = req.params.toUserId;
     const status = req.params.status;
+
+    if (fromUserId == toUserId) {
+      return res.status(400).json({
+        message: "ree babu waah apne ko hi request bhej ra hai waah",
+      });
+    }
 
     const connectionRequest = new ConnectionRequest({
       fromUserId,
@@ -16,9 +22,30 @@ requestRouter.post("/send/:status/:toUserId", userAuth, async (req, res) => {
       status,
     });
 
+    const ALLOWED_STATUS = ["ignore", "intrested"];
+
+    if (!ALLOWED_STATUS.includes(status)) {
+      return res.status(400).json({
+        message: "not Allowed Status",
+      });
+    }
+
+    const existingConnectionRequest = await ConnectionRequest.findOne({
+      $or: [
+        { fromUserId, toUserId },
+        { fromUserId: toUserId, toUserId: fromUserId },
+      ],
+    });
+
+    if (existingConnectionRequest) {
+      return res.status(400).json({
+        message: "Connection Request Already Exist",
+      });
+    }
     const data = await connectionRequest.save();
     res.status(201).json({
       message: "connectionRequest sent successesfully",
+      data,
     });
   } catch (error) {
     res.status(500).json({

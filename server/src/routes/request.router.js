@@ -1,6 +1,7 @@
 import { Router } from "express";
 import userAuth from "../middlewares/auth.middleware.js";
 import ConnectionRequest from "../model/connection.model.js";
+import User from "../model/user.model.js";
 
 const requestRouter = Router();
 
@@ -9,6 +10,14 @@ requestRouter.post("/send/:status/:toUserId", userAuth, async (req, res) => {
     const fromUserId = req.user._id;
     const toUserId = req.params.toUserId;
     const status = req.params.status;
+
+    const userId = await User.findById(toUserId);
+
+    if (!userId) {
+      return res.status(400).json({
+        message: "User Not Exist ",
+      });
+    }
 
     if (fromUserId == toUserId) {
       return res.status(400).json({
@@ -44,7 +53,7 @@ requestRouter.post("/send/:status/:toUserId", userAuth, async (req, res) => {
     }
     const data = await connectionRequest.save();
     res.status(201).json({
-      message: "connectionRequest sent successesfully",
+      message: `${req.user.firstName} is ${status} in ${userId.firstName}`,
       data,
     });
   } catch (error) {

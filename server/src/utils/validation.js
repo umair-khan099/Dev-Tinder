@@ -20,3 +20,7 @@ export const validateSignUp = (req) => {
     throw new Error("Please enter a strong password");
   }
 };
+
+// export const validateEditProfileData = (req) => {
+//   const allowedEditField = 
+// }

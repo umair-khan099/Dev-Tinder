@@ -15,8 +15,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
 
-app.use("/api/auth", authRouter);
-app.use("/api/profile/", profileRouter);
-app.use("/api/request/", requestRouter);
+app.use("/auth", authRouter);
+app.use("/profile", profileRouter);
+app.use("/request", requestRouter);
 
 export default app;

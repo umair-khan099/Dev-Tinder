@@ -68,36 +68,36 @@ requestRouter.post("/review/:status/:requestId", userAuth, async (req, res) => {
   try {
     const user = req.user;
     const { status, requestId } = req.params;
+
     const ALLOWED_STATUS = ["accepted", "rejected"];
 
     if (!ALLOWED_STATUS.includes(status)) {
-      return res.status(400).json({
-        message: " Activity Not Allowed ",
+      return res.status(404).json({
+        message: "Action not allowed",
       });
     }
 
-    const connectionRequest = await ConnectionRequest.findOne({
+    const Connection = await ConnectionRequest.findOne({
       _id: requestId,
       toUserId: user._id,
       status: "intrested",
     });
 
-    if (!connectionRequest) {
-      return res.status(404).json({
-        message: "connection not found",
+    if (!Connection) {
+      return res.status(400).json({
+        message: "There is no connection",
       });
     }
 
-    connectionRequest.status = status;
+    Connection.status = status;
 
-    const data = await connectionRequest.save();
+    const data = await Connection.save();
 
-    return res.status(200).json({
-      message: `request has ${status}`,
-      data,
+    return res.status(400).json({
+      message: `connection has ${status} , ${data}  `,
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       message: error.message,
     });
   }

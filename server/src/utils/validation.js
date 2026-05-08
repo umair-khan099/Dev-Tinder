@@ -21,6 +21,3 @@ export const validateSignUp = (req) => {
   }
 };
 
-// export const validateEditProfileData = (req) => {
-//   const allowedEditField = 
-// }

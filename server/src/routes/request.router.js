@@ -25,12 +25,6 @@ requestRouter.post("/send/:status/:toUserId", userAuth, async (req, res) => {
       });
     }
 
-    const connectionRequest = new ConnectionRequest({
-      fromUserId,
-      toUserId,
-      status,
-    });
-
     const ALLOWED_STATUS = ["ignore", "intrested"];
 
     if (!ALLOWED_STATUS.includes(status)) {
@@ -51,6 +45,13 @@ requestRouter.post("/send/:status/:toUserId", userAuth, async (req, res) => {
         message: "Connection Request Already Exist",
       });
     }
+
+    const connectionRequest = new ConnectionRequest({
+      fromUserId,
+      toUserId,
+      status,
+    });
+
     const data = await connectionRequest.save();
     res.status(201).json({
       message: `${req.user.firstName} is ${status} in ${userId.firstName}`,
@@ -63,4 +64,42 @@ requestRouter.post("/send/:status/:toUserId", userAuth, async (req, res) => {
   }
 });
 
+requestRouter.post("/review/:status/:requestId", userAuth, async (req, res) => {
+  try {
+    const user = req.user;
+    const { status, requestId } = req.params;
+    const ALLOWED_STATUS = ["accepted", "rejected"];
+
+    if (!ALLOWED_STATUS.includes(status)) {
+      return res.status(400).json({
+        message: " Activity Not Allowed ",
+      });
+    }
+
+    const connectionRequest = await ConnectionRequest.findOne({
+      _id: requestId,
+      toUserId: user._id,
+      status: "intrested",
+    });
+
+    if (!connectionRequest) {
+      return res.status(404).json({
+        message: "connection not found",
+      });
+    }
+
+    connectionRequest.status = status;
+
+    const data = await connectionRequest.save();
+
+    return res.status(200).json({
+      message: `request has ${status}`,
+      data,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
 export default requestRouter;

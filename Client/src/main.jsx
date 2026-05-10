@@ -4,15 +4,19 @@ import "./index.css";
 import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import Navbar from "./components/Navbar.jsx";
+import Body from "./pages/Body.jsx";
+import Login from "./pages/Login.jsx";
 
 const router = createBrowserRouter([
   {
-    path: "/navbar",
-    element: <Navbar />,
-  },
-  {
     path: "/",
-    element: <App />,
+    element: <Body />,
+    children: [
+      {
+        path: "/login",
+        element: <Login />,
+      },
+    ],
   },
 ]);
 

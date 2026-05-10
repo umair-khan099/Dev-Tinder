@@ -1,17 +1,32 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("virat@gmail.com");
+  const [password, setPassword] = useState("Virat.1234");
 
-  const handleLogin = async () =>{
-    const data = axios.post()
-  }
-
+  const handleLogin = async (e) => {
+    try {
+      e.preventDefault();
+      await axios.post(
+        "http://localhost:3000/auth/login",
+        {
+          email,
+          password,
+        },
+        { withCredentials: true },
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="py-8 flex items-center justify-center bg-gray-100 px-4 ">
-      <form className="w-full max-w-sm bg-white shadow-md rounded-2xl p-8 border border-gray-200">
+      <form
+        onSubmit={handleLogin}
+        className="w-full max-w-sm bg-white shadow-md rounded-2xl p-8 border border-gray-200"
+      >
         <h1 className="text-3xl font-semibold text-center text-gray-800 mb-6">
           Login
         </h1>

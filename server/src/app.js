@@ -8,11 +8,18 @@ import requestRouter from "./routes/request.router.js";
 import authRouter from "./routes/auth.router.js";
 import userRouter from "./routes/user.router.js";
 import feedRouter from "./routes/feed.router.js";
+import cors from "cors";
 
 dotenv.config();
 
 const app = express();
 
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));

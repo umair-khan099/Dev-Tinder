@@ -22,7 +22,6 @@ feedRouter.get("/feed", userAuth, async (req, res) => {
       hiddenUserFromFeed.add(req.fromUserId.toString());
       hiddenUserFromFeed.add(req.toUserId.toString());
     });
-    console.log(hiddenUserFromFeed);
 
     const feddUSers = await User.find({
       _id: { $nin: Array.from(hiddenUserFromFeed) },

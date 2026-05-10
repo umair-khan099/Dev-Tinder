@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import userAuth from "../middlewares/auth.middleware.js";
 import Connections from "../model/connection.model.js";
 
-const USER_DATA = "firstName photoUrl age skills about gender";
+export const USER_DATA = "firstName photoUrl age skills about gender";
 
 const userRouter = Router();
 
@@ -40,7 +40,7 @@ userRouter.get("/connections", userAuth, async (req, res) => {
       }
       return row.fromUserId;
     });
-    
+
     return res.status(200).json({
       message: "All connected users",
       data,

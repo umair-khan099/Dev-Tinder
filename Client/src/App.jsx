@@ -2,11 +2,7 @@ import React from "react";
 import Navbar from "./components/Navbar";
 
 const App = () => {
-  return (
-    <>
-   
-    </>
-  );
+  return <></>;
 };
 
 export default App;

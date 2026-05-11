@@ -1,6 +1,9 @@
-import React from 'react'
+import React from "react";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
+  const user = useSelector((store) => store.user);
+  console.log(user);
   return (
     <div className="navbar bg-base-300 shadow-sm">
       <div className="flex-1">
@@ -14,10 +17,14 @@ const Navbar = () => {
             className="btn btn-ghost btn-circle avatar"
           >
             <div className="w-10 rounded-full ">
-              <img
-                alt="Tailwind CSS Navbar component"
-                src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
-              />
+              {user ? (
+                <img alt="Tailwind CSS Navbar component" src={user.photoUrl} />
+              ) : (
+                <img
+                  alt="Tailwind CSS Navbar component"
+                  src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp"
+                />
+              )}
             </div>
           </div>
           <ul
@@ -40,7 +47,7 @@ const Navbar = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Navbar
+export default Navbar;

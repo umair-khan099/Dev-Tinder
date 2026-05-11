@@ -42,7 +42,7 @@ profileRouter.patch("/edit", userAuth, async (req, res) => {
       });
     }
 
-    if (data.skills.length > 10) {
+    if (data.skills?.length > 10) {
       res.status(400).json({
         message: "kuchh jyada hi skill wala bnn ra hai kya +",
       });

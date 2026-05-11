@@ -1,11 +1,11 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router";
-import Navbar from "./components/Navbar.jsx";
 import Body from "./pages/Body.jsx";
 import Login from "./pages/Login.jsx";
+import { Provider } from "react-redux";
+import appStore from "./utils/AppStore.js";
 
 const router = createBrowserRouter([
   {
@@ -21,5 +21,7 @@ const router = createBrowserRouter([
 ]);
 
 createRoot(document.getElementById("root")).render(
-  <RouterProvider router={router} />,
+  <Provider store={appStore}>
+    <RouterProvider router={router} />,
+  </Provider>,
 );

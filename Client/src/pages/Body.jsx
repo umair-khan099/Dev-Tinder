@@ -20,7 +20,7 @@ const Body = () => {
       dispatch(addUser(res.data.user));
       console.log(res.data);
     } catch (error) {
-        navigate("/login");
+      navigate("/login");
       console.error(error);
     }
   };
@@ -29,9 +29,13 @@ const Body = () => {
     fetchProfile();
   }, []);
   return (
-    <div>
+    <div className="min-h-screen flex flex-col">
       <Navbar />
-      <Outlet />
+
+      <main className="flex-grow">
+        <Outlet />
+      </main>
+
       <Footer />
     </div>
   );

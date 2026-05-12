@@ -9,13 +9,27 @@ const authRouter = Router();
 authRouter.post("/signup", async (req, res) => {
   try {
     validateSignUp(req);
-    const { password, firstName, email } = req.body;
-    const hashPassword = await bcrypt.hash(password, 10);
-    let user = new User({ firstName, email, password: hashPassword });
+    const { firstName, password, email, photoUrl, skills, about, gender, age } =
+      req.body;
 
+    const hashPassword = await bcrypt.hash(password, 10);
+    let user = new User({
+      firstName,
+      email,
+      password: hashPassword,
+      photoUrl,
+      skills,
+      about,
+      gender,
+      age,
+    });
     await user.save();
 
-    res.send("user added successfully", {
+    console.log(req.body);
+    console.log(req.body.skills);
+    console.log(Array.isArray(req.body.skills));
+    res.status(201).json({
+      message: "user added successfully",
       user,
     });
   } catch (error) {

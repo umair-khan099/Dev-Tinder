@@ -3,6 +3,7 @@ import UserCard from "./UserCard";
 import axios from "axios";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const EditProfile = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName);
@@ -13,9 +14,11 @@ const EditProfile = ({ user }) => {
   const [about, setAbout] = useState(user.about);
   const [skills, setskills] = useState(user.skills.join(", "));
   const [error, seterror] = useState("");
+  const [showToast, setShowToast] = useState(false);
   const dispatch = useDispatch();
 
-  const saveProfile = async () => {
+  const saveProfile = async (e) => {
+    e.preventDefault();
     try {
       const res = axios.patch(
         BASE_URL + "/profile/edit",
@@ -31,7 +34,13 @@ const EditProfile = ({ user }) => {
         { withCredentials: true },
       );
       dispatch(addUser(res.data?.updatedUser));
-    } catch (error) {}
+      setShowToast(true);
+      setTimeout(() => {
+        setShowToast(false);
+      }, 3000);
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <div className="flex justify-center items-center">
@@ -154,6 +163,12 @@ const EditProfile = ({ user }) => {
           }}
         />
       </div>
+      {showToast && (
+        <div className="fixed top-5 right-5 bg-green-600 text-white px-4 py-2 rounded-lg shadow-md text-sm font-medium">
+          Profile updated successfully
+        </div>
+      )}
+      ;
     </div>
   );
 };

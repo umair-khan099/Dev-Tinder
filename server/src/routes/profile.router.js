@@ -51,7 +51,10 @@ profileRouter.patch("/edit", userAuth, async (req, res) => {
       returnDocument: "after",
     });
 
-    res.send("user updated succssfully ", { updatedUser });
+    res.status(201).json({
+      message: "user updated succssfully",
+      updatedUser,
+    });
   } catch (error) {
     res.status(400).json({
       message: error.message,

@@ -4,15 +4,18 @@ import { Link, useNavigate } from "react-router";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
 import { removeUser } from "../utils/userSlice";
+import { removeFeed } from "../utils/feedSlice";
 const Navbar = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleLogout = async () => {
     try {
       const res = await axios.post(BASE_URL + "/auth/logout", null, {
         withCredentials: true,
       });
       dispatch(removeUser());
+      dispatch(removeFeed());
       navigate("/login");
     } catch (error) {
       console.error(error);
@@ -24,7 +27,9 @@ const Navbar = () => {
   return (
     <div className="navbar bg-base-300 shadow-sm">
       <div className="flex-1">
-        <a className="btn btn-ghost text-xl">DevTinder</a>
+        <Link to={"/feed"} className="btn btn-ghost text-xl">
+          DevTinder
+        </Link>
       </div>
       <div className="flex gap-2">
         <div className="dropdown dropdown-end mx-5">
@@ -55,7 +60,10 @@ const Navbar = () => {
               </Link>
             </li>
             <li>
-              <a>Settings</a>
+              <Link to={"/connections"}>Connections</Link>
+            </li>
+            <li>
+              <Link to={"/requests"}>Requests</Link>
             </li>
             <li>
               <a onClick={handleLogout}>Logout</a>

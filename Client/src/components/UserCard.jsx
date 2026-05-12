@@ -1,12 +1,13 @@
 import React from "react";
 
 const UserCard = ({ user, setNext }) => {
+  const { firstName, lastName, age, gender, photoUrl, about, skills } = user;
   console.log(user);
   return (
     <div className="flex justify-center items-center min-h-[600px]  text-white px-4">
       <div className="bg-zinc-900 w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl border border-zinc-800">
         <img
-          src={user.photoUrl}
+          src={photoUrl}
           alt="profile"
           className="w-full h-80 object-cover"
         />
@@ -14,20 +15,16 @@ const UserCard = ({ user, setNext }) => {
         <div className="p-5">
           <div className="flex items-center justify-between">
             <h1 className="text-2xl font-bold">
-              {user.firstName}, {user.age}
+              {firstName}, {age}
             </h1>
 
-            <span className="text-sm text-zinc-400 capitalize">
-              {user.gender}
-            </span>
+            <span className="text-sm text-zinc-400 capitalize">{gender}</span>
           </div>
 
-          <p className="text-zinc-300 mt-3 text-sm leading-relaxed">
-            {user.about}
-          </p>
+          <p className="text-zinc-300 mt-3 text-sm leading-relaxed">{about}</p>
 
           <div className="flex flex-wrap gap-2 mt-4">
-            {user.skills.map((skill, index) => (
+            {skills.map((skill, index) => (
               <span
                 key={index}
                 className="bg-white text-black text-xs px-3 py-1 rounded-full font-medium"

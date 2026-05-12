@@ -8,10 +8,11 @@ const feedRouter = Router();
 feedRouter.get("/feed", userAuth, async (req, res) => {
   try {
     const user = req.user;
-    const page = parseInt(req.query.page) || 1;
-    let limit = parseInt(req.query.limit) || 2;
-    limit = limit > 20 ? 20 : limit;
-    const skip = (page - 1) * limit;
+    // const page = parseInt(req.query.page) || 1;
+    // let limit = parseInt(req.query.limit) || 2;
+    // limit = limit > 20 ? 20 : limit;
+    // const skip = (page - 1) * limit;
+
     const connections = await Connections.find({
       $or: [{ fromUserId: user._id }, { toUserId: user._id }],
     }).select("fromUserId toUserId");
@@ -23,15 +24,15 @@ feedRouter.get("/feed", userAuth, async (req, res) => {
       hiddenUserFromFeed.add(req.toUserId.toString());
     });
 
-    const feddUSers = await User.find({
+    const feedUsers = await User.find({
       _id: { $nin: Array.from(hiddenUserFromFeed) },
-    })
-      .select(USER_DATA)
-      .skip(skip)
-      .limit(limit);
+    });
+    // .select(USER_DATA)
+    // .skip(skip)
+    // .limit(limit);
     return res.status(201).json({
       message: "user feed",
-      feddUSers,
+      feedUsers,
     });
   } catch (error) {
     return res.status(500).json({

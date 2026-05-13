@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { BASE_URL } from "../utils/constants";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
-import { addRequests } from "../utils/requests";
+import { addRequests, removeRequests } from "../utils/requests";
 
 const Requests = () => {
   const allRequests = useSelector((store) => store.requests);
@@ -17,6 +17,22 @@ const Requests = () => {
       dispatch(addRequests(res.data.connctionRequest));
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const handleRequest = async (status, _id) => {
+    try {
+      const res = await axios.post(
+        BASE_URL + "/request/review/" + status + "/" + _id,
+        {},
+        {
+          withCredentials: true,
+        },
+      );
+      dispatch(removeRequests(_id));
+      console.log(res);
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -79,11 +95,15 @@ const Requests = () => {
 
                 {/* right */}
                 <div className="flex items-center gap-2">
-                  <button className=" text-xs px-4 py-2 rounded-full border border-zinc-300 bg-white hover:border-red-400 hover:text-red-500 transition-all duration-200">
+                  <button
+                    onClick={() => handleRequest("rejected", request._id)}
+                    className=" text-xs px-4 py-2 rounded-full border border-zinc-300 bg-white hover:border-red-400 hover:text-red-500 transition-all duration-200"
+                  >
                     Reject
                   </button>
 
                   <button
+                    onClick={() => handleRequest("accepted", request._id)}
                     className=" text-xs px-4 py-2 rounded-full bg-zinc-900 text-white hover:bg-zinc-700 transition-all duration-200
                     "
                   >

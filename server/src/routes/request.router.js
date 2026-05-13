@@ -1,4 +1,4 @@
-import { Router } from "express";
+  import { Router } from "express";
 import userAuth from "../middlewares/auth.middleware.js";
 import ConnectionRequest from "../model/connection.model.js";
 import User from "../model/user.model.js";

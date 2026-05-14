@@ -9,6 +9,7 @@ import Feed from "./components/Feed.jsx";
 import Profile from "./components/Profile.jsx";
 import Connections from "./components/Connections.jsx";
 import Requests from "./components/Requests.jsx";
+import SignUp from "./pages/SignUp.jsx";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
       {
         path: "/requests",
         element: <Requests />,
+      },
+      {
+        path: "/signup",
+        element: <SignUp />,
       },
     ],
   },

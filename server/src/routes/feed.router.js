@@ -8,8 +8,8 @@ const feedRouter = Router();
 feedRouter.get("/feed", userAuth, async (req, res) => {
   try {
     const user = req.user;
-    // const page = parseInt(req.query.page) || 1;
-    // let limit = parseInt(req.query.limit) || 2;
+    // const page = parseInt(req.query.page) || 0;
+    // let limit = parseInt(req.query.limit) || 10;
     // limit = limit > 20 ? 20 : limit;
     // const skip = (page - 1) * limit;
 
@@ -25,7 +25,7 @@ feedRouter.get("/feed", userAuth, async (req, res) => {
     });
 
     const feedUsers = await User.find({
-      _id: { $nin: Array.from(hiddenUserFromFeed) },
+      _id: { $nin: [...Array.from(hiddenUserFromFeed), user._id] },
     });
     // .select(USER_DATA)
     // .skip(skip)

@@ -1,10 +1,24 @@
+import axios from "axios";
 import React from "react";
+import { BASE_URL } from "../utils/constants";
+import { useDispatch } from "react-redux";
+import { removeFeed } from "../utils/feedSlice";
 
-const UserCard = ({ user, setNext }) => {
+const UserCard = ({ user }) => {
+  const dispatch = useDispatch();
+  const handleSendRequest = async (status, _id) => {
+    const res = await axios.post(
+      BASE_URL + "/request/send/" + status + "/" + _id,
+      {},
+      { withCredentials: true },
+    );
+    dispatch(removeFeed(_id));
+  };
+
   const { firstName, lastName, age, gender, photoUrl, about, skills } = user;
   console.log(user);
   return (
-    <div className="flex justify-center items-center min-h-[600px]  text-white px-4">
+    <div className="flex justify-center items-center min-h-150  text-white px-4">
       <div className="bg-zinc-900 w-full max-w-sm rounded-2xl overflow-hidden shadow-2xl border border-zinc-800">
         <img
           src={photoUrl}
@@ -36,14 +50,14 @@ const UserCard = ({ user, setNext }) => {
 
           <div className="flex gap-4 mt-6">
             <button
-              onClick={() => setNext((prev) => prev + 1)}
+              onClick={() => handleSendRequest("ignore", user._id)}
               className="w-1/2 border border-white py-2 rounded-xl font-semibold hover:bg-red-800 hover:text-white transition"
             >
               Ignore
             </button>
 
             <button
-              onClick={() => setNext((prev) => prev + 1)}
+              onClick={() => handleSendRequest("intrested", user._id)}
               className="w-1/2 border border-white text-white py-2 rounded-xl font-semibold hover:bg-green-300 transition"
             >
               Interested
